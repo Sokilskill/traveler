@@ -1,8 +1,16 @@
 <script setup>
-import IButton from './components/IButton/IButton.vue'
+import HomepageView from './views/HomepageView.vue'
+const isDesktop = window.innerWidth > 1024
+const isTablet = window.innerWidth <= 1024 && window.innerWidth > 748
 </script>
 
 <template>
-  <h1 class="mb-10 bg-red-700 block text-3xl font-bold underline">Hello Vue</h1>
-  <IButton></IButton>
+  <template v-if="isDesktop">
+    <HomepageView />
+  </template>
+  <template v-else-if="isTablet">This is tablet</template>
+  <template v-else>
+    <div v-show="!isDesktop && !isTablet">this is mobile</div>
+  </template>
+  <div v-show="!isDesktop && !isTablet">this is mobile</div>
 </template>
