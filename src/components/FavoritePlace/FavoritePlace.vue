@@ -1,15 +1,24 @@
-<script setup></script>
+<script setup>
+import FavoritePlaceIconButton from './FavoritePlaceIconButton.vue'
+import DeleteIcon from './icons/DeleteIcon.vue'
+import EditIcon from './icons/EditIcon.vue'
+</script>
 
 <template>
-  <section class="text-[#939393] mb-6 last:mb-0">
+  <section class="text-gray mb-6 last:mb-0">
     <div class="flex gap-4">
       <img class="w-[76px] h-[76px] shrink-0" src="" alt="" />
       <div>
         <div class="flex justify-between items-center mb-2">
-          <h2 class="font-bold text-sm text-[#2C2C2C]">Палац Спорту</h2>
+          <h2 class="font-bold text-sm text-black">Палац Спорту</h2>
           <div class="flex gap-2">
-            <button>edit</button>
-            <button>delete</button>
+            <FavoritePlaceIconButton>
+              <EditIcon />
+            </FavoritePlaceIconButton>
+
+            <FavoritePlaceIconButton>
+              <DeleteIcon />
+            </FavoritePlaceIconButton>
           </div>
         </div>
         <p class="text-xs line-clamp-3">
