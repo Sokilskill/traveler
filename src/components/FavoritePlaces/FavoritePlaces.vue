@@ -1,17 +1,40 @@
 <script setup>
 import FavoritePlace from '../FavoritePlace/FavoritePlace.vue'
 import IButton from '../IButton/IButton.vue'
+import { ref } from 'vue'
+const counter = ref(0) // { value: 0 }
+const user = ref({ name: 'Jack', age: 10 })
+const changeName = (newName) => {
+  user.value.name = newName
+}
+const increment = () => {
+  counter.value += 1
+}
+const decrement = () => {
+  counter.value -= 1
+}
+
+const newUserName = ref('')
+
+const updateName = () => {
+  user.value.name = newUserName.value
+  newUserName.value = ''
+}
 </script>
 
 <template>
   <div class="px-6">
-    <div class="text-gray mb-4">Додані маркери</div>
-    <slot name="list">
-      <FavoritePlace :key="n" v-for="n in 4" />
-    </slot>
-    <slot name="largeList">
-      <FavoritePlace :key="n" v-for="n in 2" />
-    </slot>
+    <h3 class="text-gray mb-4">Додані маркери</h3>
+    <FavoritePlace :key="n" v-for="n in 4" />
+
+    <p>{{ user.name }}</p>
+    <input placeholder="Change name" v-model="newUserName" @keyup.enter="updateName" />
+
+    <p class="text-center text-2xl" v-if="counter !== 10">Counter: {{ counter }}</p>
+
+    <IButton class="w-full mt-5" @click="increment" :disabled="counter === 10">Додати</IButton>
+    <IButton class="w-full mt-5" @click="decrement" :disabled="counter === 0">Відняти</IButton>
+
     <IButton class="w-full mt-10">Додати маркер</IButton>
   </div>
 </template>

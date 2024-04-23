@@ -7,9 +7,6 @@ import FavoritePlaces from './components/FavoritePlaces/FavoritePlaces.vue'
   <!-- <HomepageView /> -->
 
   <div class="bg-white h-screen w-[400px]">
-    <FavoritePlaces>
-      <template v-slot:list>Список</template>
-      <template #largeList></template>
-    </FavoritePlaces>
+    <FavoritePlaces />
   </div>
 </template>
