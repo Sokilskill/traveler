@@ -4,9 +4,7 @@ import IButton from '../IButton/IButton.vue'
 import { ref } from 'vue'
 const counter = ref(0) // { value: 0 }
 const user = ref({ name: 'Jack', age: 10 })
-const changeName = (newName) => {
-  user.value.name = newName
-}
+
 const increment = () => {
   counter.value += 1
 }
@@ -32,7 +30,14 @@ const updateName = () => {
 
     <p class="text-center text-2xl" v-if="counter !== 10">Counter: {{ counter }}</p>
 
-    <IButton class="w-full mt-5" @click="increment" :disabled="counter === 10">Додати</IButton>
+    <IButton
+      variant="gradient"
+      red="red"
+      class="w-full mt-5"
+      @click="increment"
+      :disabled="counter === 10"
+      >Додати</IButton
+    >
     <IButton class="w-full mt-5" @click="decrement" :disabled="counter === 0">Відняти</IButton>
 
     <IButton class="w-full mt-10">Додати маркер</IButton>
