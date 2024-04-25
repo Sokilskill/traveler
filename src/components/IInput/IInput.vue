@@ -30,22 +30,6 @@ const changeValue = (event) => {
         v-bind="{ ...$props, ...$attrs }"
         @input="changeValue"
       />
-
-      <!--
-        // додавання пропсів до елемента, а не до обгортки
-        :type="props.type" 
-        :placeholder="props.placeholder"
-       
- // додавання пропсів до елемента можна використати v-bind додає всі пропси до цього елемента
- // але не будуть примінятися атрибути  
- v-bind="props" 
- 
- //
- // додає пропси і атрибути
- v-bind="{...$props, ...$attrs}" 
-
-        @input="changeValue"
-      /> -->
     </label>
   </div>
 </template>
