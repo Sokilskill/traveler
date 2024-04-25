@@ -1,7 +1,7 @@
 <script setup>
 import FavoritePlace from '../FavoritePlace/FavoritePlace.vue'
 import IButton from '../IButton/IButton.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 const counter = ref(0) // { value: 0 }
 const user = ref({ name: 'Jack', age: 10 })
 
@@ -18,6 +18,20 @@ const updateName = () => {
   user.value.name = newUserName.value
   newUserName.value = ''
 }
+
+const disabledColor = computed(() => {
+  if (counter.value <= 2) {
+    return 'bg-red-200'
+  } else if (counter.value <= 4) {
+    return 'bg-red-400'
+  } else if (counter.value <= 6) {
+    return 'bg-red-500'
+  } else if (counter.value <= 8) {
+    return 'bg-red-700'
+  }else {
+    return 'bg-orange-950'
+  }
+})
 </script>
 
 <template>
@@ -26,13 +40,13 @@ const updateName = () => {
     <FavoritePlace :key="n" v-for="n in 4" />
 
     <p>{{ user.name }}</p>
+    <div :class="disabledColor" >{{ disabledColor }}</div>
     <input placeholder="Change name" v-model="newUserName" @keyup.enter="updateName" />
 
-    <p class="text-center text-2xl" v-if="counter !== 10">Counter: {{ counter }}</p>
+    <p class="text-center text-2xl">Counter: {{ counter }}</p>
 
     <IButton
-      variant="gradient"
-      red="red"
+      :class="disabledColor"
       class="w-full mt-5"
       @click="increment"
       :disabled="counter === 10"
