@@ -2,18 +2,19 @@
 import FormContainer from '../FormContainer.vue'
 import IInput from '../../IInput/IInput.vue'
 import IButton from '../../IButton/IButton.vue'
-import { reactive, toRaw, watch } from 'vue'
+import { ref, toRaw, watch } from 'vue'
 
 const emit = defineEmits(['submit'])
-const userData = reactive({
+const userData = ref({
   email: '',
   password: ''
 })
 
 watch(
-  userData,
+  userData.value,
   () => {
     console.log('user data changed')
+    localStorage.setItem('name', JSON.stringify(userData.value))
   },
   { immediate: true }
 )
