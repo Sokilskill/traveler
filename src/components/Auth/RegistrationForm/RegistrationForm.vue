@@ -14,7 +14,7 @@ const userData = reactive({
 
 <template>
   <FormContainer @submit.prevent="$emit('submit', toRaw(userData))">
-    <IInput class="mb-4" type="textarea" label="Повне ім'я" v-model="userData.name" />
+    <IInput class="mb-4" label="Повне ім'я" v-model="userData.name" />
     <IInput
       class="mb-4"
       label="Електронна пошта"
