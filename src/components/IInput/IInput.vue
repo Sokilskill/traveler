@@ -25,22 +25,19 @@ const baseStyles =
 const inputStyles = computed(() => {
   return isTextarea.value ? baseStyles + ' resize-none' : baseStyles
 })
+
+const componentName = computed(() => {
+  return isTextarea.value ? 'textarea' : 'input'
+})
 </script>
 
 <template>
   <div class="w-full text-[#2C2C2C]">
     <label class="block">
       <span class="block text-xs px-3 mb-2">{{ props.label }}</span>
-      <textarea
-        v-if="isTextarea"
+      <component
+        :is="componentName"
         rows="3"
-        :class="inputStyles"
-        v-bind="{ ...$props, ...$attrs }"
-        :value="modelValue"
-        @input="emit('update:modelValue', $event.target.value)"
-      ></textarea>
-      <input
-        v-else
         :class="inputStyles"
         v-bind="{ ...$props, ...$attrs }"
         :value="modelValue"
