@@ -1,8 +1,9 @@
 <script setup>
-import { MapboxMap } from '@studiometa/vue-mapbox-gl'
+import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapSetting } from './map/setting'
 import FavoritePlaces from './components/FavoritePlaces/FavoritePlaces.vue'
+import MarkerIcon from './components/icons/MarkerIcon.vue'
 
 const favoritePlaces = [
   {
@@ -43,6 +44,9 @@ const favoritePlaces = [
         :access-token="mapSetting.apiToken"
         :map-style="mapSetting.style"
       >
+        <MapboxMarker v-for="place in favoritePlaces" :key="place.id" :lngLat="place.lngLat">
+          <MarkerIcon class="h-8 w-8" />
+        </MapboxMarker>
       </MapboxMap>
     </div>
   </main>
