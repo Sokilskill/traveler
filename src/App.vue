@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapSetting } from './map/setting'
 import FavoritePlaces from './components/FavoritePlaces/FavoritePlaces.vue'
 import MarkerIcon from './components/icons/MarkerIcon.vue'
+import { ref } from 'vue'
 
 const favoritePlaces = [
   {
@@ -28,13 +29,19 @@ const favoritePlaces = [
     lngLat: [30.523333, 50.320001]
   }
 ]
+
+const activeId = ref(null)
+
+const changeActiveId = (id) => {
+  activeId.value = id
+}
 </script>
 
 <template>
   <!-- <HomepageView /> -->
   <main class="flex h-screen">
     <div class="bg-white h-screen w-[400px]">
-      <FavoritePlaces :items="favoritePlaces" />
+      <FavoritePlaces :items="favoritePlaces" :active-id="activeId" />
     </div>
     <div class="w-full h-full flex items-center justify-center text-2xl">
       <MapboxMap
@@ -45,7 +52,9 @@ const favoritePlaces = [
         :map-style="mapSetting.style"
       >
         <MapboxMarker v-for="place in favoritePlaces" :key="place.id" :lngLat="place.lngLat">
-          <MarkerIcon class="h-8 w-8" />
+          <button @click="changeActiveId(place.id)">
+            <MarkerIcon class="h-8 w-8" />
+          </button>
         </MapboxMarker>
       </MapboxMap>
     </div>
