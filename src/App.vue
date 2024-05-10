@@ -1,7 +1,7 @@
 <script setup>
-import HomepageView from './views/HomepageView.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <HomepageView />
+  <router-view />
 </template>
