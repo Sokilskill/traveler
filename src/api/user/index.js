@@ -1,7 +1,7 @@
 import { clientFetch } from '../clientFetch'
 
 export const login = (body) => {
-  return clientFetch.post('user/login', body)
+  return clientFetch.post('/user/login', body)
 }
 
 export const registerUser = (body) => {
