@@ -22,8 +22,8 @@ watch(
 
 <template>
   <FormContainer @submit.prevent="emit('submit', toRaw(userData))">
-    <IInput class="mb-4" type="email" placeholder="Електронна пошта" v-model="userData.email" />
-    <IInput type="password" placeholder="Пароль" v-model="userData.password" />
+    <IInput class="mb-4" type="email" label="Електронна пошта" v-model="userData.email" />
+    <IInput type="password" label="Пароль" v-model="userData.password" />
     <IButton class="mt-10 w-full" variant="gradient" type="submit">Увійти</IButton>
   </FormContainer>
 </template>
