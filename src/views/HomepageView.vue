@@ -1,34 +1,37 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapSetting } from '../map/setting.js'
 import FavoritePlaces from '../components/FavoritePlaces/FavoritePlaces.vue'
 import MarkerIcon from '../components/icons/MarkerIcon.vue'
+import { getFavoritePlaces } from '@/api/favorite-place/index.js'
 
-const favoritePlaces = [
-  {
-    id: 1,
-    title: 'New place 1',
-    description: 'Super description 1',
-    img: '../src/assets/img/static-map.png',
-    lngLat: [30.523333, 50.490001]
-  },
-  {
-    id: 2,
-    title: 'New place 2',
-    description: 'Super description 2',
-    img: '../src/assets/img/static-map.png',
-    lngLat: [30.523333, 50.450001]
-  },
-  {
-    id: 3,
-    title: 'Lisnyky',
-    description: 'Super description 3 Lorem ',
-    img: '../src/assets/img/static-map.png',
-    lngLat: [30.523333, 50.320001]
-  }
-]
+// const favoritePlaces = [
+//   {
+//     id: 1,
+//     title: 'New place 1',
+//     description: 'Super description 1',
+//     img: '../src/assets/img/static-map.png',
+//     lngLat: [30.523333, 50.490001]
+//   },
+//   {
+//     id: 2,
+//     title: 'New place 2',
+//     description: 'Super description 2',
+//     img: '../src/assets/img/static-map.png',
+//     lngLat: [30.523333, 50.450001]
+//   },
+//   {
+//     id: 3,
+//     title: 'Lisnyky',
+//     description: 'Super description 3 Lorem ',
+//     img: '../src/assets/img/static-map.png',
+//     lngLat: [30.523333, 50.320001]
+//   }
+// ]
+
+const favoritePlaces = ref([])
 
 const activeId = ref(null)
 const map = ref(null)
@@ -38,10 +41,15 @@ const changeActiveId = (id) => {
 }
 
 const changePlace = (id) => {
-  const { lngLat } = favoritePlaces.find((place) => place.id === id)
+  const { lngLat } = favoritePlaces.value.find((place) => place.id === id)
   changeActiveId(id)
   map.value.flyTo({ center: lngLat, zoom: 12 })
 }
+
+onMounted(async () => {
+  const { data } = await getFavoritePlaces()
+  favoritePlaces.value = data
+})
 </script>
 
 <template>
