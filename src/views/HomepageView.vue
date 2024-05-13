@@ -6,7 +6,8 @@ import { mapSetting } from '../map/setting.js'
 import FavoritePlaces from '../components/FavoritePlaces/FavoritePlaces.vue'
 import MarkerIcon from '../components/icons/MarkerIcon.vue'
 import { getFavoritePlaces } from '@/api/favorite-place/index.js'
-
+import { useModal } from '../composables/useModal.js'
+import CreateNewPlaceModal from '@/components/CreateNewPlaceModal/CreateNewPlaceModal.vue'
 // const favoritePlaces = [
 //   {
 //     id: 1,
@@ -36,6 +37,7 @@ const favoritePlaces = ref([])
 const activeId = ref(null)
 const map = ref(null)
 const mapMarkerLngLat = ref(null)
+const { isOpen, openModal, closeModal } = useModal()
 
 const changeActiveId = (id) => {
   activeId.value = id
@@ -60,7 +62,13 @@ onMounted(async () => {
 <template>
   <main class="flex h-screen">
     <div class="bg-white h-screen w-[400px]">
-      <FavoritePlaces :items="favoritePlaces" :active-id="activeId" @place-clicked="changePlace" />
+      <FavoritePlaces
+        :items="favoritePlaces"
+        :active-id="activeId"
+        @place-clicked="changePlace"
+        @create="openModal"
+      />
+      <CreateNewPlaceModal :is-open="isOpen" @close="closeModal" />
     </div>
     <div class="w-full h-full flex items-center justify-center text-2xl">
       <MapboxMap
