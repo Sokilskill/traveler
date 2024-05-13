@@ -1,13 +1,15 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapSetting } from '../map/setting.js'
 import FavoritePlaces from '../components/FavoritePlaces/FavoritePlaces.vue'
 import MarkerIcon from '../components/icons/MarkerIcon.vue'
-import { getFavoritePlaces } from '@/api/favorite-place/index.js'
+import { addFavoritePlace, getFavoritePlaces } from '@/api/favorite-place/index.js'
 import { useModal } from '../composables/useModal.js'
 import CreateNewPlaceModal from '@/components/CreateNewPlaceModal/CreateNewPlaceModal.vue'
+import { useMutation } from '@/composables/useMutation.js'
+
 // const favoritePlaces = [
 //   {
 //     id: 1,
@@ -32,12 +34,33 @@ import CreateNewPlaceModal from '@/components/CreateNewPlaceModal/CreateNewPlace
 //   }
 // ]
 
-const favoritePlaces = ref([])
+// const favoritePlaces = ref([])
 
 const activeId = ref(null)
 const map = ref(null)
 const mapMarkerLngLat = ref(null)
 const { isOpen, openModal, closeModal } = useModal()
+
+const { data, mutation: getPlaces } = useMutation({
+  mutationFn: () => getFavoritePlaces()
+})
+
+const favoritePlaces = computed(() => data.value?.data ?? [])
+
+const {
+  mutation: addPlace,
+  isLoading: isAddingPlace,
+  error
+} = useMutation({
+  mutationFn: (newPlaceData) => addFavoritePlace(newPlaceData),
+  onSuccess: () => {
+    closeModal()
+    mapMarkerLngLat.value = null
+  }
+  // onError: () => {
+  //   alert('something wrong'), closeModal()
+  // }
+})
 
 const changeActiveId = (id) => {
   activeId.value = id
@@ -53,9 +76,19 @@ const handleMapClick = ({ lngLat }) => {
   mapMarkerLngLat.value = [lngLat.lng, lngLat.lat]
 }
 
+const handleAddPlace = async (formData, resetForm) => {
+  const body = {
+    ...formData,
+    coordinates: mapMarkerLngLat.value
+  }
+  const successAddPlace = await addPlace(body)
+
+  if (successAddPlace) {
+    resetForm()
+  }
+}
 onMounted(async () => {
-  const { data } = await getFavoritePlaces()
-  favoritePlaces.value = data
+  getPlaces()
 })
 </script>
 
@@ -68,7 +101,13 @@ onMounted(async () => {
         @place-clicked="changePlace"
         @create="openModal"
       />
-      <CreateNewPlaceModal :is-open="isOpen" @close="closeModal" />
+      <CreateNewPlaceModal
+        :is-open="isOpen"
+        @close="closeModal"
+        @submit="handleAddPlace"
+        :has-error="error"
+        :is-loading="isAddingPlace"
+      />
     </div>
     <div class="w-full h-full flex items-center justify-center text-2xl">
       <MapboxMap
@@ -87,7 +126,7 @@ onMounted(async () => {
         <MapboxMarker
           v-for="place in favoritePlaces"
           :key="place.id"
-          :lngLat="place.lngLat"
+          :lngLat="place.coordinates"
           anchor="bottom"
         >
           <button @click="changeActiveId(place.id)">
