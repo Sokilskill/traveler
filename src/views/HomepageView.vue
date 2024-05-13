@@ -67,9 +67,9 @@ const changeActiveId = (id) => {
 }
 
 const changePlace = (id) => {
-  const { lngLat } = favoritePlaces.value.find((place) => place.id === id)
+  const { coordinates } = favoritePlaces.value.find((place) => place.id === id)
   changeActiveId(id)
-  map.value.flyTo({ center: lngLat, zoom: 12 })
+  map.value.flyTo({ center: coordinates, zoom: 12 })
 }
 
 const handleMapClick = ({ lngLat }) => {
@@ -129,7 +129,7 @@ onMounted(async () => {
           :lngLat="place.coordinates"
           anchor="bottom"
         >
-          <button @click="changeActiveId(place.id)">
+          <button @click.stop="changeActiveId(place.id)">
             <MarkerIcon class="h-8 w-8" />
           </button>
         </MapboxMarker>
