@@ -10,7 +10,7 @@ const props = defineProps({
     type: String
   },
   description: {
-    requred: true,
+    required: true,
     type: String
   },
   img: String,
@@ -33,12 +33,11 @@ const emit = defineEmits(['edit', 'delete'])
       />
       <div class="w-full">
         <div class="flex justify-between items-center mb-2">
-          <h2 class="font-bold text-sm text-black">{{ props.title }}</h2>
+          <h2 class="font-bold text-sm text-[#2C2C2C]">{{ props.title }}</h2>
           <div class="flex gap-2">
             <FavoritePlaceIconButton @click="emit('edit')">
               <EditIcon />
             </FavoritePlaceIconButton>
-
             <FavoritePlaceIconButton @click.stop="emit('delete')">
               <DeleteIcon />
             </FavoritePlaceIconButton>

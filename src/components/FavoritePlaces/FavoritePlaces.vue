@@ -5,7 +5,7 @@ import { useModal } from '../../composables/useModal.js'
 import EditPlaceModal from '../EditPlaceModal/EditPlaceModal.vue'
 import { computed, ref } from 'vue'
 import { useMutation } from '@/composables/useMutation'
-import { deleteFavoritePlace, updateFavoritePlace } from '@/api/favorite-place'
+import { deleteFavoritePlace, updateFavoritePlace } from '@/api/favorite-places'
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal.vue'
 
 const props = defineProps({
@@ -16,15 +16,22 @@ const props = defineProps({
   activeId: {
     required: true,
     type: [String, null]
+  },
+  isPlacesLoading: {
+    type: Boolean,
+    default: false
   }
 })
 
 const emit = defineEmits(['place-clicked', 'create', 'updated'])
 
-const idOfDeleteItem = ref(null)
-const selectedId = ref(null)
-const selectedItem = computed(() => props.items.find((place) => place.id === selectedId.value))
-
+const idOfDeletedItem = ref(null)
+const { isOpen: isEditOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal()
+const {
+  isOpen: isConfirmationModalOpen,
+  openModal: openConfirmationModal,
+  closeModal: closeConfirmationModal
+} = useModal()
 const { mutation: updatePlace, isLoading } = useMutation({
   mutationFn: (formData) => updateFavoritePlace(formData),
   onSuccess: () => {
@@ -32,25 +39,20 @@ const { mutation: updatePlace, isLoading } = useMutation({
     emit('updated')
   }
 })
-
 const {
   mutation: deletePlace,
   isLoading: isDeleting,
   error: deleteError
 } = useMutation({
-  mutationFn: (formData) => deleteFavoritePlace(formData),
+  mutationFn: (id) => deleteFavoritePlace(id),
   onSuccess: () => {
-    closeEditModal()
+    closeConfirmationModal()
+    idOfDeletedItem.value = null
     emit('updated')
   }
 })
-
-const { isOpen: isEditModalOpen, openModal: openEditModal, closeModal: closeEditModal } = useModal()
-const {
-  isOpen: isConfirmationModalOpen,
-  openModal: openConfirmationModal,
-  closeModal: closeConfirmationModal
-} = useModal()
+const selectedId = ref(null)
+const selectedItem = computed(() => props.items.find((place) => place.id === selectedId.value))
 
 const handleEditPlace = (id) => {
   selectedId.value = id
@@ -62,48 +64,55 @@ const handleSubmit = (formData) => {
 }
 
 const handleOpenConfirmationModal = (id) => {
-  idOfDeleteItem.value = id
+  idOfDeletedItem.value = id
   openConfirmationModal()
 }
+
 const handleDeletePlace = () => {
-  deletePlace(idOfDeleteItem.value)
+  deletePlace(idOfDeletedItem.value)
 }
 </script>
 
 <template>
-  <div class="px-6">
-    <h3 class="text-gray mb-4">Додані маркери</h3>
+  <div class="px-6 text-black">
+    <div class="text-gray mb-4">Додані маркери</div>
 
-    <div class="text-black" v-if="items.length === 0 && !isPlacesLoading">Список порожній</div>
+    <slot name="label"></slot>
+    <slot name="list">
+      <div v-if="items.length === 0 && !isPlacesLoading">Список порожній</div>
+      <FavoritePlace
+        v-for="place in props.items"
+        :key="place.id"
+        :title="place.title"
+        :description="place.description"
+        :img="place.img"
+        :is-active="place.id === props.activeId"
+        @click="emit('place-clicked', place.id)"
+        @edit="handleEditPlace(place.id)"
+        @delete="handleOpenConfirmationModal(place.id)"
+      />
 
-    <FavoritePlace
-      v-for="place in props.items"
-      :key="place.id"
-      :title="place.title"
-      :description="place.description"
-      :img="place.img"
-      :is-active="place.id === props.activeId"
-      @click="emit('place-clicked', place.id)"
-      @edit="handleEditPlace(place.id)"
-      @delete="handleOpenConfirmationModal(place.id)"
-    />
+      <EditPlaceModal
+        :is-open="isEditOpen"
+        :place="selectedItem"
+        :is-loading="isLoading"
+        @close="closeEditModal"
+        @submit="handleSubmit"
+      />
 
-    <EditPlaceModal
-      :is-open="isEditModalOpen"
-      :place="selectedItem"
-      :is-loading="isLoading"
-      @close="closeEditModal"
-      @submit="handleSubmit"
-    />
+      <ConfirmationModal
+        :is-open="isConfirmationModalOpen"
+        :is-loading="isDeleting"
+        :has-error="deleteError"
+        @cancel="closeConfirmationModal"
+        @confirm="handleDeletePlace"
+        title="Ви дійсно хочете видалити улюблене місце?"
+      />
+    </slot>
 
-    <ConfirmationModal
-      :is-open="isConfirmationModalOpen"
-      :is-loading="isDeleting"
-      :has-error="deleteError"
-      @cancel="closeConfirmationModal"
-      @confirm="handleDeletePlace"
-      title="Ви дійсно хочете видалити улюблене місце?"
-    />
-    <IButton class="w-full mt-10" variant="gradient" @click="emit('create')">Додати маркер</IButton>
+    <slot></slot>
+    <IButton class="w-full mt-10" variant="gradient" @click="emit('create')">
+      Додати маркер
+    </IButton>
   </div>
 </template>

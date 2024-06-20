@@ -14,18 +14,6 @@ const {
   mutationFn: (data) => authService.login(data),
   onSuccess: () => router.replace('/map')
 })
-
-// const handleLogin = async (userData) => {
-//   isLoading.value = true
-//   try {
-//     await login(userData)
-//     router.replace('/map')
-//   } catch (error) {
-//     console.log(error)
-//   } finally {
-//     isLoading.value = false
-//   }
-// }
 </script>
 
 <template>

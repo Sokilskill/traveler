@@ -1,20 +1,20 @@
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, Teleport } from 'vue'
 import CrossIcon from '../icons/CrossIcon.vue'
+
 const emit = defineEmits(['close'])
 
 onMounted(() => {
   document.body.style.overflow = 'hidden'
-  // console.log('mount')
 })
+
 onUnmounted(() => {
   document.body.style.overflow = 'initial'
-  // console.log('UNmount')
 })
 </script>
 
 <template>
-  <Teleport to="body">
+  <component :is="Teleport" to="body">
     <div
       class="flex w-full h-full fixed top-0 left-0 overflow-auto bg-[rgba(0,0,0,0.3)]"
       @click.self="emit('close')"
@@ -26,5 +26,5 @@ onUnmounted(() => {
         <slot></slot>
       </div>
     </div>
-  </Teleport>
+  </component>
 </template>

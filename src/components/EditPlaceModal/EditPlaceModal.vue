@@ -5,6 +5,7 @@ import IButton from '../../components/IButton/IButton.vue'
 import IInput from '../../components/IInput/IInput.vue'
 import InputImage from '../../components/InputImage/InputImage.vue'
 import { ref, watch } from 'vue'
+import IModal from '../IModal/IModal.vue'
 
 const props = defineProps({
   isOpen: {
@@ -49,7 +50,6 @@ const handleChangeImg = (url) => {
         <MarkerIcon height="18" width="18" />
         <span class="font-bold text-base">Редагувати маркер</span>
       </div>
-
       <form @submit.prevent="emit('submit', formData)">
         <div class="flex gap-5">
           <div class="w-5/12">
@@ -59,16 +59,16 @@ const handleChangeImg = (url) => {
               alt="place img"
             />
           </div>
-        </div>
 
-        <div class="w-7/12">
-          <IInput label="Локація" v-model="formData.title" />
-          <div class="mt-4">
-            <IInput label="Опис" type="textarea" v-model="formData.description" />
+          <div class="w-7/12">
+            <IInput label="Локація" v-model="formData.title" />
+            <div class="mt-4">
+              <IInput label="Опис" type="textarea" v-model="formData.description" />
+            </div>
+            <IButton class="mt-10 w-full" variant="gradient" :is-loading="isLoading">
+              Зберегти
+            </IButton>
           </div>
-          <IButton class="mt-10 w-full" variant="gradient" :is-loading="isLoading">
-            Зберегти
-          </IButton>
         </div>
 
         <InputImage class="mt-3" @uploaded="handleChangeImg">
