@@ -6,6 +6,10 @@ export const TOKEN_KEY = 'token'
 class AuthService {
   #token = null
 
+  constructor() {
+    this.#token = localStorage.getItem(TOKEN_KEY)
+  }
+
   isLoggedIn() {
     return Boolean(this.#token)
   }
@@ -45,10 +49,15 @@ class AuthService {
   }
 
   async refresh() {
-    const { data } = await clientFetch.get('/user/refresh')
-    const { accessToken } = data
-
-    this.setToken(accessToken)
+    try {
+      const { data } = await clientFetch.get('/user/refresh')
+      const { accessToken } = data
+      this.setToken(accessToken)
+      return accessToken
+    } catch (e) {
+      this.clearToken()
+      throw e
+    }
   }
 }
 
@@ -71,11 +80,14 @@ clientFetch.interceptors.response.use(
   (response) => response,
   async (error) => {
     const errorCode = error.response.status
-
+    console.log('errorCode', errorCode)
     if (errorCode === 401) {
       try {
-        return await authService.refresh()
+        await authService.refresh()
+        return clientFetch(error.config)
       } catch (e) {
+        console.log('e', e)
+        authService.clearToken()
         router.push('/auth/login')
         return Promise.reject(e)
       }
